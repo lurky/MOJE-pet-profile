@@ -1,0 +1,6 @@
+{
+  "CMS": "contentful",
+  "CMS_SPACE": "YOUR_SPACE_ID",
+  "CMS_TOKEN": "YOUR_DELIVERY_TOKEN",
+  "OMDB_KEY": "YOUR_OMDB_KEY"
+}

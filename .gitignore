@@ -1,0 +1,9 @@
+# Old local copy retained because Windows has it locked
+/MOJE-UNIT-8-EXERCISE/
+**/cms.json
+**/config.local.json
+**/key.properties
+*.jks
+*.keystore
+**/.dart_tool/
+**/build/

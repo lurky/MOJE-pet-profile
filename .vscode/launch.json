@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Unit 8 Profile (local CMS)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/moje_unit8_exercise",
+      "program": "${workspaceFolder}/moje_unit8_exercise/lib/main.dart",
+      "toolArgs": [
+        "--dart-define-from-file=cms.json"
+      ]
+    }
+  ]
+}

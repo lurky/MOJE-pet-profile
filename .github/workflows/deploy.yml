@@ -1,0 +1,51 @@
+name: Deploy profile to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: moje_unit8_exercise
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - name: Build with CMS and OMDb settings
+        env:
+          REPOSITORY: ${{ github.event.repository.name }}
+          OMDB_KEY: ${{ secrets.OMDB_KEY }}
+          CMS_SPACE: ${{ vars.CMS_SPACE }}
+          CMS_TOKEN: ${{ secrets.CMS_TOKEN }}
+          CMS_ENVIRONMENT: ${{ vars.CMS_ENVIRONMENT }}
+        run: |
+          test -n "$OMDB_KEY" || { echo 'Set the OMDB_KEY secret.'; exit 1; }
+          test -n "$CMS_SPACE" || { echo 'Set the CMS_SPACE variable.'; exit 1; }
+          test -n "$CMS_TOKEN" || { echo 'Set the CMS_TOKEN secret.'; exit 1; }
+          flutter build web --release --base-href "/$REPOSITORY/" --dart-define="OMDB_KEY=$OMDB_KEY" --dart-define="CMS_SPACE=$CMS_SPACE" --dart-define="CMS_TOKEN=$CMS_TOKEN" --dart-define="CMS_ENVIRONMENT=${CMS_ENVIRONMENT:-master}"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: moje_unit8_exercise/build/web
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
